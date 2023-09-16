@@ -4,6 +4,20 @@ import base64
 
 api_key = ''
 
+def GetBalance() -> int:
+    """
+    Geneplore API
+    """
+    url = 'https://api.geneplore.com/user/balance'
+    headers = {'authorization': api_key}
+
+    response = requests.get(url, headers=headers)
+    resp = response.json()
+    if resp.get('error'):
+        raise Exception(resp['error'])
+
+    return resp['credits']
+
 class Chat():
     def GetModels() -> dict:
         """
