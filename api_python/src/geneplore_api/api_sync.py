@@ -4,20 +4,6 @@ import base64
 
 api_key = ''
 
-class ConversationMessage():
-    def __init__(self, role: str, content: str, function_call: dict = None):
-        self.role = role
-        self.content = content
-        self.function_call = function_call
-
-    def to_dict(self):
-        resp = {'role': self.role, 'content': self.content}
-        if self.function_call:
-            resp['function_call'] = self.function_call
-        return resp
-    
-
-
 class Chat():
     def GetModels() -> dict:
         """
@@ -52,14 +38,14 @@ class Chat():
         url = 'https://api.geneplore.com/chat/openai'
         headers = {'authorization': api_key}
 
-        for message in conversation:
-            if not isinstance(message, ConversationMessage):
-                raise TypeError("All objects in the conversation list must be of type ConversationMessage")
-        
-        conversation = [message.to_dict() for message in conversation]
-        print(conversation)
+        conversation_dict = []
+        try:
+            for i in conversation:
+                conversation_dict.append(i.to_dict())
+        except:
+            raise TypeError("All objects in the conversation list must be of type ConversationMessage")
 
-        data = {'model': model, 'conversation': conversation}
+        data = {'model': model, 'conversation': conversation_dict}
         if settings:
             data['settings'] = settings
         if functions:
@@ -69,7 +55,114 @@ class Chat():
         resp = response.json()
         if resp.get('error'):
             raise Exception(resp['error'])
-        message = ConversationMessage(resp['response']['role'], resp['response']['content'])
+        message = Chat.ConversationMessage(resp['response']['role'], resp['response']['content'])
+        cost = resp['creditcost']
+
+        return message, cost
+    
+
+    def PaLM(model: str, conversation: list, settings: dict = None) -> tuple[ConversationMessage, int]:
+        """
+        Geneplore Chat API
+        """
+        url = 'https://api.geneplore.com/chat/palm'
+        headers = {'authorization': api_key}
+
+        conversation_dict = []
+        try:
+            for i in conversation:
+                conversation_dict.append(i.to_dict())
+        except:
+            raise TypeError("All objects in the conversation list must be of type ConversationMessage")
+
+        data = {'model': model, 'conversation': conversation_dict}
+        if settings:
+            data['settings'] = settings
+
+        response = requests.post(url, headers=headers, json=data)
+        resp = response.json()
+        if resp.get('error'):
+            raise Exception(resp['error'])
+        message = Chat.ConversationMessage(resp['response']['role'], resp['response']['content'])
+        cost = resp['creditcost']
+
+        return message, cost
+    
+    def LLaMA(model: str, conversation: list, settings: dict = None) -> tuple[ConversationMessage, int]:
+        """
+        Geneplore Chat API
+        """
+        url = 'https://api.geneplore.com/chat/llama'
+        headers = {'authorization': api_key}
+
+        conversation_dict = []
+        try:
+            for i in conversation:
+                conversation_dict.append(i.to_dict())
+        except:
+            raise TypeError("All objects in the conversation list must be of type ConversationMessage")
+
+        data = {'model': model, 'conversation': conversation_dict}
+        if settings:
+            data['settings'] = settings
+
+        response = requests.post(url, headers=headers, json=data)
+        resp = response.json()
+        if resp.get('error'):
+            raise Exception(resp['error'])
+        message = Chat.ConversationMessage(resp['response']['role'], resp['response']['content'])
+        cost = resp['creditcost']
+
+        return message, cost
+    
+    def Replicate(model: str, conversation: list) -> tuple[ConversationMessage, int]:
+        """
+        Geneplore Chat API
+        """
+        url = 'https://api.geneplore.com/chat/replicate'
+        headers = {'authorization': api_key}
+
+        conversation_dict = []
+        try:
+            for i in conversation:
+                conversation_dict.append(i.to_dict())
+        except:
+            raise TypeError("All objects in the conversation list must be of type ConversationMessage")
+
+        data = {'model': model, 'conversation': conversation_dict}
+
+        response = requests.post(url, headers=headers, json=data)
+        resp = response.json()
+        if resp.get('error'):
+            raise Exception(resp['error'])
+        message = Chat.ConversationMessage(resp['response']['role'], resp['response']['content'])
+        cost = resp['creditcost']
+
+        return message, cost
+    
+    def Cohere(model: str, conversation: list, settings: dict = None) -> tuple[ConversationMessage, int]:
+        """
+        Geneplore Chat API
+        """
+        url = 'https://api.geneplore.com/chat/cohere'
+        headers = {'authorization': api_key}
+
+        conversation_dict = []
+        try:
+            for i in conversation:
+                conversation_dict.append(i.to_dict())
+        except:
+            raise TypeError("All objects in the conversation list must be of type ConversationMessage")
+
+        data = {'model': model, 'conversation': conversation_dict}
+        if settings:
+            data['settings'] = settings
+
+        response = requests.post(url, headers=headers, json=data)
+        resp = response.json()
+        if resp.get('error'):
+            raise Exception(resp['error'])
+        message = Chat.ConversationMessage(resp['response']['role'], resp['response']['content'])
         cost = resp['creditcost']
 
         return message, cost
@@ -212,6 +305,58 @@ class Video():
         headers = {'authorization': api_key}
 
         data = {'model': model, 'prompt': prompt}
+
+        response = requests.post(url, headers=headers, json=data)
+        resp = response.json()
+        if resp.get('error'):
+            raise Exception(resp['error'])
+        image = base64.b64decode(resp['base64'])
+        cost = resp['creditcost']
+
+        return image, cost
+    
+class Moderations():
+    def OpenAI(text: str) -> dict:
+        """
+        Geneplore Moderations API
+        """
+        url = 'https://api.geneplore.com/mod/openai'
+        headers = {'authorization': api_key}
+
+        data = {'text': text}
+
+        response = requests.post(url, headers=headers, json=data)
+        resp = response.json()
+        if resp.get('error'):
+            raise Exception(resp['error'])
+
+        return resp
+    def Perspective(text: str) -> dict:
+        """
+        Geneplore Moderations API
+        """
+        url = 'https://api.geneplore.com/mod/perspective'
+        headers = {'authorization': api_key}
+
+        data = {'text': text}
+
+        response = requests.post(url, headers=headers, json=data)
+        resp = response.json()
+        if resp.get('error'):
+            raise Exception(resp['error'])
+
+        return resp
+    
+class Music():
+
+    def Generate(prompt: str, duration: int = 5) -> tuple[bytes, int]:
+        """
+        Geneplore Music API
+        """
+        url = 'https://api.geneplore.com/music/generate'
+        headers = {'authorization': api_key}
+
+        data = {'duration': duration, 'prompt': prompt}
 
         response = requests.post(url, headers=headers, json=data)
         resp = response.json()

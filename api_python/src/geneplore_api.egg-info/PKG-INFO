@@ -12,6 +12,7 @@ Classifier: Development Status :: 3 - Alpha
 Requires-Python: >=3.7
 Description-Content-Type: text/markdown
 License-File: LICENSE
+Requires-Dist: requests
 
 # Geneplore AI's API
 

@@ -2,7 +2,7 @@ from setuptools import setup
 
 setup(
     name='geneplore_api',
-    version='0.0.1',
+    version='3.1.0',
     install_requires=[
         'requests'
     ],
