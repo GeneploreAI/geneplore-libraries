@@ -39,13 +39,14 @@ class Chat():
             self.content = content
             self.function_call = function_call
 
+
         def to_dict(self):
             resp = {'role': self.role, 'content': self.content}
             if self.function_call:
                 resp['function_call'] = self.function_call
             return resp
         
-    def OpenAI(model: str, conversation: list, settings: dict = None, functions: list = None) -> tuple[ConversationMessage, int]:
+    def OpenAI(model: str, conversation: list[dict], settings: dict = None, functions: list = None) -> tuple[ConversationMessage, int]:
         """
         Geneplore Chat API
         """
@@ -75,7 +76,7 @@ class Chat():
         return message, cost
     
 
-    def PaLM(model: str, conversation: list, settings: dict = None) -> tuple[ConversationMessage, int]:
+    def PaLM(model: str, conversation: list[dict], settings: dict = None) -> tuple[ConversationMessage, int]:
         """
         Geneplore Chat API
         """
@@ -102,7 +103,7 @@ class Chat():
 
         return message, cost
     
-    def LLaMA(model: str, conversation: list, settings: dict = None) -> tuple[ConversationMessage, int]:
+    def LLaMA(model: str, conversation: list[dict], settings: dict = None) -> tuple[ConversationMessage, int]:
         """
         Geneplore Chat API
         """
@@ -129,7 +130,7 @@ class Chat():
 
         return message, cost
     
-    def Replicate(model: str, conversation: list) -> tuple[ConversationMessage, int]:
+    def Replicate(model: str, conversation: list[dict]) -> tuple[ConversationMessage, int]:
         """
         Geneplore Chat API
         """
@@ -154,7 +155,7 @@ class Chat():
 
         return message, cost
     
-    def Cohere(model: str, conversation: list, settings: dict = None) -> tuple[ConversationMessage, int]:
+    def Cohere(model: str, conversation: list[dict], settings: dict = None, documents: list[dict] = None) -> tuple[ConversationMessage, int]:
         """
         Geneplore Chat API
         """
@@ -171,6 +172,8 @@ class Chat():
         data = {'model': model, 'conversation': conversation_dict}
         if settings:
             data['settings'] = settings
+        if documents:
+            data['documents'] = documents
 
         response = requests.post(url, headers=headers, json=data)
         resp = response.json()
